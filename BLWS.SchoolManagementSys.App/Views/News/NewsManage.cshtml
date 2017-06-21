@@ -1,0 +1,105 @@
+﻿@{
+    Page.Title = "新闻管理";
+    Layout = "~/Views/_Layout.cshtml";
+}
+<link href="~/Content/wangEditor.css" rel="stylesheet" />
+<div class="row" style="padding:10px">
+    <div data-ng-app="News">
+        <div ng-controller="NewsController">
+            @*显示当前位置导航*@
+            <span id="UserName" style="display:none"></span>
+            <div class="top_nav_f">
+                <ol class="breadcrumb" style="margin-bottom:0;">
+                    <li><span class="fa fa-home"></span> <a href="javascript:;">首页</a></li>
+                    <li class="active">新闻管理</li>
+                </ol>
+            </div>
+
+            @*新闻展示区域*@
+            <div id="show_News">
+                <button class="btn btn-primary col-sm-12" style="display:block" ng-click="New_News()">发布</button>
+                <div ng-repeat="news in All_News">
+                    <table class="table table-hover" style="border:2px solid rgb(40,96,144)">
+                        <tr>
+                            @*标题*@
+                            <td width="70%" class="text-center h5">{{news.Title}}</td>
+                            @*上传人*@
+                            <td  width="10%" class="text-center">{{news.UploadBy}}</td>
+                            <td  width="10%" class="text-center"><a href="javascript:;" ng-click="Edit_News(news)">编辑</a></td>
+                            <td width="10%" class="text-center"><a href="javascript:;" ng-click="Details(news)">查看详情</a></td>
+                        </tr>
+                        @*<tr>
+
+                                <td colspan="3">
+                                    <div id="content">
+                                        {{news.Content}}
+                                    </div>
+                                </td>
+                            </tr>*@
+                        <tr>
+                            @*上传时间*@
+                            <td colspan="4" class="text-right">
+                                {{news.UploadTime}}
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            @*新建新闻编辑器区域*@
+            <div id="editor">
+                <div style="margin:5px 0px">
+                    <input type="text" required class="form-control" placeholder="新闻标题" ng-model="CurrentNews.Title" />
+                </div>
+                <div id="News_editor" style="background-color:#fff;">
+                    <div>{{CurrentNews.Content}}</div>
+                </div>
+                <div style="margin: 5px 0px 0px 5px" class="text-right">
+                    <button class="btn btn-success" ng-click="Details(CurrentNews)">预览</button>
+                    <button class="btn btn-primary" ng-click="Save_News()">保存</button>
+                    <button class="btn btn-default" ng-click="Back()">返回</button>
+                </div>
+            </div>
+            @*预览/详情区域*@
+            <div id="details" style="display:none;padding:10px 50px">
+                <div class="text-right" style="margin:5px">
+                    <div class="btn-group btn-group-sm" role="group">
+                        <button class="btn btn-default"><span class="fa fa-angle-double-left" ng-click="Back()">  返回</span></button>
+                        <button class="btn btn-primary"><span class="fa fa-edit" ng-click="Edit_News(Detailsnews)">  编辑</span></button>
+                        <button class="btn btn-success"><span class="fa fa-print" id="print_btn">打印</span></button>
+                    </div>
+                </div>
+                <div id="print">
+                    <h2 class="text-center" style="margin:14px;">{{Detailsnews.Title}}</h2>
+                    <p class="text-right">
+                        <small>发布时间: {{Detailsnews.UploadTime}}</small>
+                        <small style="margin-left:20px">作者: {{Detailsnews.UploadBy}}</small>
+                    </p>
+                    <p ng-bind-html="Detailsnews.Content | trustHtml"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section Script{
+    <script src="~/Scripts/WangEditor/wangEditor.js"></script>
+    <script type="text/javascript">
+        $("#editor").hide();
+        var E = window.wangEditor
+        var editor = new E("#News_editor")
+
+        editor.create();
+
+        $("#print_btn").click(function () {
+            $("#print").jqprint();
+        })
+        $("#UserName").text($.cookie('userName'));
+    </script>
+
+    <script src="~/Scripts/angular.js"></script>
+    <script src="~/Scripts/angular-route.js"></script>
+    <script src="~/ng-js/News/News.js"></script>
+    <script src="~/ng-js/News/NewsController.js"></script>
+    <script src="~/ng-js/News/NewsService.js"></script>
+    <script src="~/Scripts/PRINT/jquery.jqprint-0.3.js"></script>
+    <script src="~/Scripts/PRINT/jquery-migrate-mine.js"></script>
+}

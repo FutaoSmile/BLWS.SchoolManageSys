@@ -1,0 +1,135 @@
+﻿@*@{
+        Page.Title = "登陆";
+        Layout = "~/Views/_Layout.cshtml";
+    }*@
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>登陆</title>
+
+    <link href="~/Scripts/bootstrap-3.3.7-dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/Scripts/font-awesome/css/font-awesome.css" rel="stylesheet" />
+    <link href="~/Content/Css/sh.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery-3.2.1.min.js"></script>
+    <script src="~/Scripts/bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
+    <script src="~/Scripts/JqueryCookie.js"></script>
+    <script src="~/Scripts/layer/layer.js"></script>
+
+</head>
+<body>
+    <div class="container-fluid">
+        <div style="width:100%;height:100%;">
+            <div style="padding-left: -20px;
+             background-image: url('../../Images/login_bg/bg.jpg');
+             background-size:cover;
+             background-repeat: no-repeat;
+             position: absolute; top: 0; left: 0;
+             width: 100%;
+             height: 100%;
+             z-index: -1;">
+            </div>
+            <div style="height:600px;">
+
+                <div class="row"  id="login_content">
+                    <div id="welcome" class="col-sm-12 col-md-5 col-md-offset-1 text-center">
+                        欢迎使用教学信息管理系统
+                    </div>
+                    <div id="login" class="col-sm-10 col-sm-offset-1 col-md-4 col-md-offset-1 panel panel-primary">
+                        <div class="panel-heading" style="font-size:20px">登录</div>
+                        <div class="panel-body">
+
+
+
+                            <div class="form-group">
+                                <label for="UserName">用户名</label>
+                                <div class="input-group">
+                                    <div class="input-group-addon">
+                                        <span class="glyphicon glyphicon-user"></span>
+                                    </div>
+                                    <input type="text" required class="form-control" id="UserName" placeholder="邮箱/电话">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="pwd">密码</label>
+                                <div class="input-group">
+                                    <siv class="input-group-addon"><span class="glyphicon glyphicon-lock"></span></siv>
+                                    <input type="password" required class="form-control" id="pwd" placeholder="密码">
+                                </div>
+                            </div>
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox" id="check"> 记住我
+                                </label>
+                            </div>
+                            <button id="btn-login" type="submit" class="btn btn-primary">登陆</button>
+                            <button id="btn-reg" class="btn btn-defalt">注册</button>
+                            <br /><br />
+                            <a id="forgetPwd">忘记密码？</a>
+
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</body>
+<script type="text/javascript">
+    $(document).ready(function () {
+        /**实现功能，保存用户的登录信息到cookie中。当登录页面被打开时，就查询cookie**/
+        //$.removeCookie('userName');
+        //$.removeCookie('userPass');
+
+        $("#btn-login").click(function () {
+            Login();
+        });
+
+        //当用户在输入密码的时候按下了Enter，相当于按了登陆按钮
+        $("#pwd").on("keydown", function (e) {
+            if (e.key == "Enter") {
+                Login();
+            }
+        });
+
+        //判断用户名和密码是否跟数据库匹配，并保存用户cookie
+        function Login() {
+            //显示正在加载
+            var layerLoad=layer.load();
+            $.ajax({
+                url: "http://localhost:57424/api/Users/Login?UserName=" + $("#UserName").val() + "&&Pwd=" + $("#pwd").val(),
+                method: "GET",
+                success: function (data) {
+                    //alert("登陆成功,即将跳转...");
+                    //关闭正在加载
+                    layer.close(layerLoad);
+                    ////提示正在跳转
+                    var LoginSuccess=layer.msg("登陆成功，3秒之后自动跳转");
+                    setTimeout(function () { 
+                    if ($("#check").is(':checked')) {
+                        $.cookie('userName', $("#UserName").val(), { expires: 7, path: '/' });
+                        $.cookie('userPass', $("#Pwd").val(), { expires: 7, path: '/' });
+                        $.cookie('userID', data.UserID, { expires: 7, path: '/' });
+                        window.location.href = "http://localhost:59192/Views/User/index.cshtml";
+                    }
+                    else {
+                        $.cookie('userName', $("#UserName").val(), { path: '/' });
+                        $.cookie('userPass', $("#Pwd").val(), { path: '/' });
+                        $.cookie('userID', data.UserID, { path: '/' });
+                        window.location.href = "http://localhost:59192/Views/User/index.cshtml";
+                    }
+                    }, 3000);
+                },
+                error: function () {/*alert("用户名或密码错误")*/layer.close(layerLoad);  layer.msg("用户名或密码错误，请重试！") }
+
+            });
+        }
+        //忘记密码
+        $("#forgetPwd").click(function () {
+            //alert("请联系系统管理员进行修改");
+            layer.msg("请联系系统管理员进行修改");
+        });
+
+    })
+</script>

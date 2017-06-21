@@ -1,0 +1,294 @@
+﻿@{
+    Page.Title = "学院教师";
+    Layout = "~/Views/_Layout.cshtml";
+}
+
+<div data-ng-app="Dep_Teacher">
+    <div ng-controller="Dep_TeacherController">
+        @*显示当前位置导航*@
+        <span id="CurrentDepID" style="display:none"></span>
+        <div class="top_nav_f">
+            <ol class="breadcrumb" style="margin-bottom:0;">
+                <li><span class="fa fa-home"></span> <a href="javascript:;">首页</a></li>
+                <li class="active">学院教师</li>
+            </ol>
+        </div>
+        <div class="x_panel">
+            <div class="x_title">
+                <a class="text-success" style="margin-left:85%; font-size:16px" ng-click="create()" href="javascript:;">新增</a>
+            </div>
+            <div class="x_content">
+                <div class="table-responsive">
+                    <table class="table table-striped table-bordered table-hover" id="User_table">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>教师姓名</th>
+                                <th>名字拼音</th>
+                                <th>联系方式</th>
+                                <th>邮箱</th>
+                        
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <!-- 添加Modal -->
+        <div class="modal fade" id="create" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title text-success" id="myModalLabel">新增本院教师</h4>
+                    </div>
+                    <div class="modal-body">
+
+                        <form class="form-horizontal" name="Create_form">
+
+                            <div class="form-group">
+                                <label for="CreateTeacherName" class="col-sm-2 control-label">姓名</label>
+                                <div class="col-sm-10">
+                                    <input name="CreateTeacherName"
+                                           id="CreateTeacherName"
+                                           ng-model="CreateTacher.teacher.UserName"
+                                           required
+                                           ng-maxlength="12"
+                                           class="form-control"
+                                           placeholder="UserName"
+                                           ng-class="{'error':Create_form.CreateTeacherName.$invalid&&Create_form.CreateTeacherName.$touched}" />
+                                    <div ng-if="Create_form.CreateTeacherName.$invalid&&Create_form.CreateTeacherName.$touched" class="text-danger">[必填项, 最大长度12]</div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="CreatePwd" class="col-sm-2 control-label">密码</label>
+                                <div class="col-sm-10">
+                                    <input name="CreatePwd"
+                                           id="CreatePwd"
+                                           ng-model="CreateTacher.teacher.Password"
+                                           ng-maxlength="16"
+                                           class="form-control"
+                                           placeholder="PassWord"
+                                           ng-class="{'error':Create_form.CreatePwd.$invalid&&Create_form.CreatePwd.$touched}" />
+                                    <div ng-if="Create_form.CreatePwd.$invalid&&Create_form.CreatePwd.$touched" class="text-danger">[必填项, 最大长度16]</div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="NamePinYin" class="col-sm-2 control-label">名字拼音</label>
+                                <div class="col-sm-10">
+                                    <input id="NamePinYin"
+                                           name="NamePinYin"
+                                           class="form-control"
+                                           placeholder="NamePinYin"
+                                           required
+                                           maxlength="30"
+                                           ng-model="CreateTacher.teacher.NamePinYin"
+                                           ng-class="{'error':Create_form.NamePinYin.$invalid&&Create_form.NamePinYin.$touched}" />
+                                    <div class="text-danger" ng-if="Create_form.NamePinYin.$invalid&&Create_form.NamePinYin.$touched">[必填项，最大长度30]</div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="Tel" class="col-sm-2 control-label">电话</label>
+                                <div class="col-sm-10">
+                                    <input id="Tel"
+                                           name="Tel"
+                                           required
+                                           type="number"
+                                           class="form-control"
+                                           placeholder="Tel"
+                                           ng-model="CreateTacher.teacher.Tel"
+                                           ng-class="{'error':Create_form.Tel.$invalid&&Create_form.Tel.$touched}" />
+                                    <div ng-if="Create_form.Tel.$invalid&&Create_form.Tel.$touched" class="text-danger">[必填项]</div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="Email" class="col-sm-2 control-label">邮箱</label>
+                                <div class="col-sm-10">
+                                    <input id="Email"
+                                           name="Email"
+                                           required
+                                           type="email"
+                                           class="form-control"
+                                           placeholder="Email"
+                                           ng-model="CreateTacher.teacher.Email"
+                                           ng-class="{'error':Create_form.Email.$invalid&&Create_form.Email.$touched}" />
+                                    <div ng-if="Create_form.Email.$invalid&&Create_form.Email.$touched" class="text-danger">[必填项]</div>
+                                </div>
+                            </div>
+                        </form>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-success" data-dismiss="modal" ng-disabled="Create_form.$invalid"
+                                ng-click="save()">
+                            保存
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+    @section Script{
+    <link href="~/Scripts/dataTable/Buttons-1.3.1/css/buttons.bootstrap.css" rel="stylesheet" />
+    <link href="~/Scripts/dataTable/Buttons-1.3.1/css/buttons.dataTables.css" rel="stylesheet" />
+    <link href="~/Scripts/dataTable/css/dataTables.bootstrap.css" rel="stylesheet" />
+    <script src="~/Scripts/dataTable/js/jquery.dataTables.js"></script>
+    <script src="~/Scripts/dataTable/js/dataTables.bootstrap.js"></script>
+
+
+
+    <script src="~/Scripts/dataTable/Buttons-1.3.1/js/dataTables.buttons.js"></script>
+    <script src="~/Scripts/dataTable/Buttons-1.3.1/js/buttons.bootstrap.js"></script>
+    <script src="~/Scripts/dataTable/Buttons-1.3.1/js/buttons.flash.js"></script>
+    <script src="~/Scripts/dataTable/Buttons-1.3.1/js/buttons.html5.js"></script>
+    <script src="~/Scripts/dataTable/Buttons-1.3.1/js/buttons.print.js"></script>
+    <script src="~/Scripts/dataTable/Buttons-1.3.1/js/buttons.colVis.js"></script>
+
+
+    <script type="text/javascript">
+        var Dep;
+        //获取学院
+        $.get("http://localhost:57424/api/Departments/GetDepByManager/" + $.cookie('userID'), function (data) {
+            Dep = data;
+            $("#CurrentDepID").text(data.DepID);
+       
+        $.get("http://localhost:57424/api/Departments/GetDepTeacher/" + Dep.DepID, function (data) {
+            var t = $('#User_table').DataTable({
+                //关闭某一列的排序功能
+                columnDefs: [
+                    {
+                        "orderable": false, "targets": 0
+                    },
+                     //{
+                     //    "orderable": false, "targets": 5
+                     //}
+                ],
+                //按钮的占位符（代替了之前分页大小的位置）
+                dom: "Bfrtip",
+                //自适应布局
+                responsive: true,
+                //每页大小
+                lengthMenu: [10, 20, 30],
+                //配置数据源
+                data: data,
+                //Y轴长度
+                scrollY: 400,
+                //分页
+                paging: true,
+                //查询
+                searching: true,
+                //排序
+                ordering: true,
+                //左下角信息
+                info: true,
+                //提示正在加载
+                processing: true,
+                //页面重新加载时保存状态
+                stateSave: true,
+                //延迟渲染
+                deferRender: false,
+                //区分大小写
+                search: {
+                    caseInsensitive: true
+                },
+
+
+                //按钮
+                buttons: [
+                {
+                    extend: "copy",
+                    className: "btn-sm"
+                },
+
+                {
+                    extend: "excel",
+                    className: "btn-sm"
+                },
+                {
+                    extend: "pdfHtml5",
+                    className: "btn-sm"
+                },
+                {
+                    extend: "print",
+                    className: "btn-sm"
+                },
+                ],
+
+                //国际化（汉化）
+                language: {
+                    //lengthMenu: '每页显示<select class="form-control input-xsmall">' + '<option value="5">5</option>' + '<option value="10">10</option>' + '<option value="20">20</option>' + '<option value="30">30</option>' + '<option value="40">40</option>' + '<option value="50">50</option>' + '</select>条记录',//左上角的分页大小显示。
+                    search: '查询：',//右上角的搜索文本，可以写html标签
+
+                    paginate: {//分页的样式内容。
+                        previous: "上一页",
+                        next: "下一页",
+                        first: "第一页",
+                        last: "最后一页"
+                    },
+                    zeroRecords: "没有检索到数据",//table tbody内容为空时，tbody的内容。
+                    //下面三者构成了总体的左下角的内容。
+                    info: "初始_MAX_ 条，筛选之后得到 _TOTAL_ 条，当前显示第_START_ 到第 _END_ ，总共_PAGES_ 页",//左下角的信息显示，大写的词为关键字。
+                    infoEmpty: "0条记录",//筛选为空时左下角的显示。
+                    infoFiltered: ""//筛选之后的左下角筛选提示，
+                },
+
+                //最后一列的按钮
+                //"columnDefs": [{
+                //    // 定义操作列,######以下是重点########
+                //    "targets": 6,//操作按钮目标列
+                //    "data": null,
+                //    "render": function (data, type, row) {
+                //        var id = '"' + row.id + '"';
+                //        var html = "<a href='javascript:void(0);'  class='delete btn btn-default btn-xs'  ><i class='fa fa-times'></i> 查看</a>"
+                //        html += "<a href='javascript:void(0);' class='up btn btn-default btn-xs'><i class='fa fa-arrow-up'></i> 编辑</a>"
+                //        html += "<a href='javascript:void(0);'   onclick='deleteThisRowPapser(" + id + ")'  class='down btn btn-default btn-xs'><i class='fa fa-arrow-down'></i> 删除</a>"
+                //        return html;
+                //    }
+                //}],
+
+                columns: [
+                    { data: null },
+                    { data: 'UserName' },
+                    { data: 'NamePinYin' },
+                    { data: 'Tel' },
+
+                    { data: 'Email' },
+                    //{
+                    //    data: 'UserID',
+                    //    "render": function (data, type, full, callback) {
+                    //        return ('<div class="btn-group btn-group-xs"><button type="button" class="btn btn-success" ng-click="Details(\'' + data + '\')">详情</button><button type="button" class="btn btn-info" ng-click="Edit(\'' + data + '\')">修改</button><button type="button" class="btn btn-warning" ng-click="Delete_btn(\'' + data + '\')">删除</button></div>');
+                    //    }
+                    //}
+                ]
+            });
+
+            //第一列添加序号
+            t.on('order.dt search.dt',
+            function () {
+                t.column(0, {
+                    "search": 'applied',
+                    "order": 'applied'
+                }).nodes().each(function (cell, i) {
+                    cell.innerHTML = i + 1;
+                });
+            }).draw();
+          
+        });
+        });
+    </script>
+
+        <script src="~/Scripts/angular.js"></script>
+        <script src="~/Scripts/angular-route.js"></script>
+        <script src="~/ng-js/Dep_Teacher/Dep_Teacher.js"></script>
+        <script src="~/ng-js/Dep_Teacher/Dep_TeacherController.js"></script>
+        <script src="~/ng-js/Dep_Teacher/Dep_TeacherService.js"></script>
+    }
+</div>

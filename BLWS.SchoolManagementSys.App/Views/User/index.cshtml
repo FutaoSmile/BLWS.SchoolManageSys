@@ -1,0 +1,452 @@
+﻿@{
+    Page.Title = "首页";
+    Layout = "~/Views/_Layout.cshtml";
+}
+<div class="container-fluid">
+    <div data-ng-app="News">
+        <div ng-controller="NewsController">
+            <div id="index">
+            <div style="background-color:#f5f5f5; border:solid #e5e5e5 1px;padding:10px 15px; margin:0 -40px; font-size:15px">
+                <span class="fa fa-home "></span>  首页
+                @*天气*@
+                <iframe style="float:right" name="weather_inc" src="http://i.tianqi.com/index.php?c=code&id=1" width="330" height="35" frameborder="0" marginwidth="0" marginheight="0" scrolling="no"></iframe>
+            </div>
+            @*最大的柱状图*@
+            <div class="row">
+                <div class="col-md-8 col-xs-12">
+                    <div class="x_panel" id="jiuYelv" style="height:432px;">
+                    </div>
+                </div>
+                <div class="col-md-4 col-xs-12">
+                    <div class="x_panel" id="zhaosheng" style="height:432px;">
+                    </div>
+                </div>
+            </div>
+            @*两个饼图*@
+            <div class="row">
+                <div class="col-sm-6 col-xs-12">
+                    <div class="x_panel" id="bingTu" style="height:432px;">
+                    </div>
+                </div>
+                <div class="col-sm-6 col-xs-12">
+                    <div id="diYu" class="x_panel" style="height:432px;">
+                    </div>
+                </div>
+            </div>
+            @*新闻和通知区域*@
+                <div class="row">
+                    <div class="col-md-4 col-sm-12">
+                        <div class="x_panel tile fixed_height_320">
+                            <div class="x_title">
+                                <h4><span class="fa fa-rss"></span>通知</h4>
+                                <div class="clearfix"></div>
+                            </div>
+                            <div class="x_content">
+                                <ul>
+                                    <li><a href="#">关于2017年端午节放假的通知</a><span class="text-right">2017-05-17</span></li>
+                                    <li><a href="#">虚拟现实与交互技术研究院暑期开课通知</a><span class="text-right">2017-05-17</span></li>
+                                    <li><a href="#">关于落实七届二次教代会意见建议的通知</a><span class="text-right">2017-05-17</span></li>
+                                    <li><a href="#">华东交通大学办公电话号码表（2016年9月）</a><span class="text-right">2017-05-16</span></li>
+                                    <li><a href="#">关于防范ONION勒索软件病毒攻击的紧急通知</a><span class="text-right">2017-05-13</span></li>
+                                    <li><a href="#">关于在2017届毕业生中开展校园文化石椅捐...</a><span class="text-right">2017-05-23</span></li>
+                                    <li><a href="#">关于第三届互联网+大赛报名情况的通报</a><span class="text-right">2017-05-23</span></li>
+                                    <li><a href="#">经管学院学术讲座</a><span style="float:right">2017-05-22</span></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    @*新闻*@
+                    <div class="col-md-4 col-sm-12">
+                        <div class="x_panel tile fixed_height_320">
+                            <div class="x_title">
+                                <h4><span class="fa fa-pinterest"></span>校内新闻</h4>
+                                <div class="clearfix"></div>
+                            </div>
+                            <div class="x_content">
+                                <ul id="news_list">
+                                    @*<li><a href="#">关于2017年端午节放假的通知</a><span class="text-right">2017-05-17</span></li>
+                            <li><a href="#">虚拟现实与交互技术研究院暑期开课通知</a><span class="text-right">2017-05-17</span></li>
+                            <li><a href="#">关于落实七届二次教代会意见建议的通知</a><span class="text-right">2017-05-17</span></li>
+                            <li><a href="#">华东交通大学办公电话号码表（2016年9月）</a><span class="text-right">2017-05-16</span></li>
+                            <li><a href="#">关于防范ONION勒索软件病毒攻击的紧急通知</a><span class="text-right">2017-05-13</span></li>
+                            <li><a href="#">关于在2017届毕业生中开展校园文化石椅捐...</a><span class="text-right">2017-05-23</span></li>
+                            <li><a href="#">关于第三届互联网+大赛报名情况的通报</a><span class="text-right">2017-05-23</span></li>
+                            <li><a href="#">经管学院学术讲座</a><span style="float:right">2017-05-22</span></li>*@
+                                    <li ng-repeat="news in All_News"><a href="javascript:(0);" ng-click="Haha(news)">{{news.Title}}</a><span class="text-right">{{news.UploadTime}}</span></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-12">
+                        <div class="x_panel tile fixed_height_320">
+                            <div class="x_title">
+                                <h4><span class="fa  fa-send-o (alias)"></span>时政新闻</h4>
+                                <div class="clearfix"></div>
+                            </div>
+                            <div class="x_content">
+                                <ul>
+                                    <li><a href="#">关于2017年端午节放假的通知</a><span class="text-right">2017-05-17</span></li>
+                                    <li><a href="#">虚拟现实与交互技术研究院暑期开课通知</a><span class="text-right">2017-05-17</span></li>
+                                    <li><a href="#">关于落实七届二次教代会意见建议的通知</a><span class="text-right">2017-05-17</span></li>
+                                    <li><a href="#">华东交通大学办公电话号码表（2016年9月）</a><span class="text-right">2017-05-16</span></li>
+                                    <li><a href="#">关于防范ONION勒索软件病毒攻击的紧急通知</a><span class="text-right">2017-05-13</span></li>
+                                    <li><a href="#">关于在2017届毕业生中开展校园文化石椅捐...</a><span class="text-right">2017-05-23</span></li>
+                                    <li><a href="#">关于第三届互联网+大赛报名情况的通报</a><span class="text-right">2017-05-23</span></li>
+                                    <li><a href="#">经管学院学术讲座</a><span style="float:right">2017-05-22</span></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="newsPage" style="margin: 10px 50px; display:none" >
+               
+                    <div class="text-right" style="margin:5px">
+                        <div class="btn-group btn-group-sm" role="group">
+                            <button class="btn btn-default"><span class="fa fa-angle-double-left" ng-click="BackToIndex()">  返回</span></button>
+                            <button class="btn btn-success"><span class="fa fa-print" id="print_btn">打印</span></button>
+                        </div>
+                    </div>
+                    <div id="print">
+                        <h2 class="text-center" style="margin:14px;">{{detailsNews.Title}}</h2>
+                        <p class="text-right">
+                            <small>发布时间: {{detailsNews.UploadTime}}</small>
+                            <small style="margin-left:20px">作者: {{detailsNews.UploadBy}}</small>
+                        </p>
+                        <p ng-bind-html="detailsNews.Content | trustHtml"></p>
+                    </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section Script{
+    <script src="~/Scripts/echarts.min.js"></script>
+    <script type="text/javascript">
+
+        //var index = layer.load(0, { shade: false }); //0代表加载的风格，支持0-2
+
+        // 基于准备好的dom，初始化echarts实例
+        var myChart = echarts.init(document.getElementById('jiuYelv'));
+        // 指定图表的配置项和数据
+        var option = {
+            backgroundColor: '#FFF',
+            color: ['#26B99A', '#34495E'],
+            title: {
+
+                text: '2015年本科毕业生初次就业率'
+            },
+
+            tooltip: {},
+            legend: {
+                data: ['各学院毕业人数', '就业率']
+
+            },
+            xAxis: {
+                data: ["艺术学院", "信息工程学院", "外国语学院", "土木建筑学院", "体育学院", "软件学院", "人文社会科学学院", "理学院", "经济管理学院", "机电工程学院", "国际学院", "轨道交通学院", "电气与电子工程学院"],
+
+                axisLabel: {
+                    interval: 0,//横轴信息全部显示
+                    rotate: 27,//-27度角倾斜显示
+                }
+            },
+            toolbox: {
+                show: true,
+                orient: 'horizontal',
+                showTitle: true,
+                feature: {
+                    saveAsImage: {
+                        type: 'png'
+                    },
+                    restore: {
+                        show: true
+                    },
+                    dataView: {
+                        show: true,
+                        readOnly: true
+                    },
+                    magicType: {
+                        type: ['line', 'bar', 'stack', 'tiled']
+                    }
+                }
+            },
+            yAxis: [{
+
+                type: 'value',
+                position: 'left',
+                name: '学院总人数',
+                axisLabel: {
+                    formatter: '{value} 人'
+                }
+            }, {
+                type: 'value',
+                position: 'rigth',
+                name: '就业率',
+                min: 70,
+                max: 100,
+                axisLabel: {
+                    formatter: '{value}%'
+                }
+            }
+            ],
+            series: [{
+                name: '各学院毕业人数',
+                type: 'bar',
+                data: [175, 204, 145, 772, 126, 881, 207, 170, 550, 535, 222, 279, 543],
+                yAxis: 1,
+            },
+            {
+                name: '就业率',
+                type: 'line',
+                data: [81.14, 86.27, 80.00, 87.69, 88.89, 87.06, 82.13, 93.53, 86.91, 90.09, 87.84, 94.27, 94.29],
+                yAxisIndex: 1,
+            }
+            ]
+        };
+        // 使用刚指定的配置项和数据显示图表。
+        myChart.setOption(option);
+
+        var myChart2 = echarts.init(document.getElementById('zhaosheng'));
+        option2 = {
+            backgroundColor: '#FFF',
+            color: ['rgb(38,185,154)', 'rgb(52,73,94)', 'rgb(189,195,199)', 'rgb(52,152,219)'],
+            tooltip: {
+                trigger: 'item',
+                formatter: "{a} <br/>{b} : {c} ({d}%)"
+            },
+            legend: {
+                orient: 'vertical',
+                left: 'left',
+                data: ['本科生', '专科生', '研究生', '继续教育']
+            },
+            title: {
+                text: '2017年招生计划',
+                x: 'center'
+            },
+            toolbox: {
+                show: true,
+                feature: {
+                    mark: { show: true },
+                    dataView: { show: true, readOnly: false },
+                    magicType: {
+                        show: true,
+                        type: ['pie', 'funnel'],
+                        option: {
+                            funnel: {
+                                x: '25%',
+                                width: '50%',
+                                funnelAlign: 'center',
+                                max: 1548
+                            }
+                        }
+                    },
+                    restore: { show: true },
+                    saveAsImage: { show: true }
+                }
+            },
+            calculable: true,
+            series: [
+                {
+                    name: '招生计划',
+                    type: 'pie',
+                    radius: ['50%', '70%'],
+                    itemStyle: {
+                        normal: {
+                            label: {
+                                show: false
+                            },
+                            labelLine: {
+                                show: false
+                            }
+                        },
+                        emphasis: {
+                            label: {
+                                show: false,
+                                position: 'center',
+                                textStyle: {
+                                    fontSize: '20',
+                                    fontWeight: 'bold'
+                                }
+                            }
+                        }
+                    },
+                    data: [
+                        { value: 10000, name: '本科生' },
+                        { value: 5000, name: '专科生' },
+                        { value: 2000, name: '研究生' },
+                        { value: 2000, name: '继续教育' }
+                    ]
+                }
+            ]
+        };
+
+        myChart2.setOption(option2);
+
+        // 基于准备好的dom，初始化echarts实例
+        var myChart3 = echarts.init(document.getElementById('bingTu'));
+        option3 = {
+            backgroundColor: '#FFF',
+            title: {
+                text: '2015届本科毕业生就业方向',
+                x: 'center'
+            }, toolbox: {
+                show: true,
+                orient: 'horizontal',
+                showTitle: true,
+                feature: {
+                    saveAsImage: {
+                        type: 'png'
+                    },
+                    restore: {
+                        show: true
+                    },
+                    dataView: {
+                        show: true,
+                        readOnly: true
+                    },
+                }
+            },
+            tooltip: {
+                trigger: 'item',
+                formatter: "{a} <br/>{b} : {c} ({d}%)"
+            },
+            legend: {
+                orient: 'vertical',
+                left: 'left',
+                data: ['升学', '应征义务兵', '签就业协议形式就业', '自由职业', '其他']
+            }, toolbox: {
+                show: true,
+                orient: 'horizontal',
+                showTitle: true,
+                feature: {
+                    saveAsImage: {
+                        type: 'png'
+                    },
+                    restore: {
+                        show: true
+                    },
+                    dataView: {
+                        show: true,
+                        readOnly: true
+                    },
+                }
+            },
+            series: [
+                {
+                    name: '就业方向',
+                    type: 'pie',
+                    color: ['rgb(38,185,154)', 'rgb(52,73,94)', 'rgb(189,195,199)', 'rgb(52,152,219)', 'rgb(155,89,182)'],
+                    radius: '55%',
+                    center: ['50%', '60%'],
+                    data: [
+                        { value: 3470, name: '签就业协议形式就业' },
+                        { value: 335, name: '升学' },
+                        { value: 172, name: '应征义务兵' },
+                        { value: 81, name: '自由职业' },
+                        { value: 190, name: '其他' }
+                    ],
+                    itemStyle: {
+                        emphasis: {
+                            shadowBlur: 10,
+                            shadowOffsetX: 0,
+                            shadowColor: 'rgba(0, 0, 0, 0.5)'
+                        }
+                    }
+                }
+            ]
+        };
+        myChart3.setOption(option3);
+        // 指定图表的配置项和数据
+
+        // 基于准备好的dom，初始化echarts实例
+        var myChart4 = echarts.init(document.getElementById('diYu'));
+        option4 = {
+            backgroundColor: '#FFF',
+            title: {
+                text: '2015 届毕业生就业经济地域流向分布',
+                x: 'center'
+            }, toolbox: {
+                show: true,
+                orient: 'horizontal',
+                showTitle: true,
+                feature: {
+                    saveAsImage: {
+                        type: 'png'
+                    },
+                    restore: {
+                        show: true
+                    },
+                    dataView: {
+                        show: true,
+                        readOnly: true
+                    },
+                }
+            },
+            tooltip: {
+                trigger: 'item',
+                formatter: "{a} <br/>{b} : {c} ({d}%)"
+            },
+            legend: {
+                orient: 'vertical',
+                left: 'left',
+                data: ['东北地区', '西北地区', '西南地区', '中部地区', '泛渤海湾地区', '泛珠江三角洲地区', '泛长江三角洲地区']
+            },
+            series: [
+                {
+                    name: '就业方向',
+                    type: 'pie',
+                    color: ['rgb(189,195,199)', 'rgb(52,73,94)', 'rgb(38,185,154)', 'rgb(52,152,219)', 'rgb(155,89,182)', 'rgb(51,122,183)', 'rgb(138,187,111)'],
+                    radius: '55%',
+                    center: ['50%', '60%'],
+                    data: [
+                        { value: 42, name: '东北地区' },
+                        { value: 111, name: '西北地区' },
+                        { value: 210, name: '西南地区' },
+                        { value: 256, name: '中部地区' },
+                         { value: 461, name: '泛渤海湾地区' },
+                          { value: 840, name: '泛珠江三角洲地区' },
+                        { value: 2312, name: '泛长江三角洲地区' }
+                    ],
+                    itemStyle: {
+                        emphasis: {
+                            shadowBlur: 10,
+                            shadowOffsetX: 0,
+                            shadowColor: 'rgba(0, 0, 0, 0.5)'
+                        }
+                    }
+                }
+            ]
+        };
+        myChart4.setOption(option4);
+        // 指定图表的配置项和数据
+        //var news = "";
+        //$.ajax({
+        //    url: "http://localhost:57424/api/News_news/getNews_news",
+        //    method: "GET",
+        //    success: function (data) {
+        //        for (var i = 0; i < data.length; i++) {
+        //            var id = "";
+        //            id = data[i].NewsID;
+        //            news += "<li><a href='javascript:void(0);'  onclick='Show(" + id + ")'>" + data[i].Title + "</a><span class='text-right'>" + data[i].UploadTime.substring(0, 10) + "</span></li>"
+        //        }
+        //        $("#news_list").append(news);
+
+        //    }
+        //});
+        //$(document).ready(function () {
+        //    function Show(NewsID) {
+        //        alert(this.NewsID);
+        //        layer.msg(NewsID);
+        //    };
+        //})
+        $("#print_btn").click(function () {
+            $("#print").jqprint();
+        })
+    </script>
+    <script src="~/Scripts/angular.js"></script>
+    <script src="~/Scripts/angular-route.js"></script>
+    <script src="~/ng-js/News/News.js"></script>
+    <script src="~/ng-js/News/NewsController.js"></script>
+    <script src="~/ng-js/News/NewsService.js"></script>
+    <script src="~/Scripts/PRINT/jquery.jqprint-0.3.js"></script>
+    <script src="~/Scripts/PRINT/jquery-migrate-mine.js"></script>
+}

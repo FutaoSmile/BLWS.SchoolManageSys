@@ -1,0 +1,20 @@
+﻿@{
+    Page.Title = "通知管理";
+    Layout = "~/Views/_Layout.cshtml";
+}
+
+<div class="row">
+    <div>
+
+    </div>
+    <div id="editor1">
+    </div>
+</div>
+@section Script{
+<script src="~/Scripts/WangEditor/wangEditor.js"></script>
+    <script type="text/javascript">
+        var E = window.wangEditor
+        var editor = new E("#editor1")
+        editor.create();
+    </script>
+    }

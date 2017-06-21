@@ -1,0 +1,135 @@
+﻿@* 如果你要使用绑定，请删除此部分*@
+@section Scripts {
+    <script src="~/Scripts/jquery.validate.min.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+}
+
+@{
+    Layout = "~/_SiteLayout.cshtml";
+    Page.Title = "注册";
+
+    // 初始化常规页变量
+    var email = "";
+    var password = "";
+    var confirmPassword = "";
+
+    // 设置验证
+Validation.RequireField("email", "你必须指定电子邮件地址.");
+    Validation.RequireField("password", "密码不能为空.");
+    Validation.Add("confirmPassword",
+        Validator.EqualsTo("password", "密码和确认密码不匹配."));
+    Validation.Add("password",
+        Validator.StringLength(
+            maxLength: Int32.MaxValue,
+            minLength: 6,
+            errorMessage: "密码必须至少包含 6 个字符"));
+
+    // 如果这是POST 请求，则验证并处理数据
+    if (IsPost) {
+        AntiForgery.Validate();
+        email = Request.Form["email"];
+        password = Request.Form["password"];
+        confirmPassword = Request.Form["confirmPassword"];
+
+        // 验证用户的 captcha 应答
+        // if (!ReCaptcha.Validate("PRIVATE_KEY")) {
+        //     ModelState.AddError("recaptcha", "Captcha 响应不正确");
+        // }
+
+        // 如果所有信息均有效，则创建新帐户
+        if (Validation.IsValid()) {
+            // 将新用户插入到数据库
+            var db = Database.Open("StarterSite");
+
+            // 检查用户是否已存在
+            var user = db.QuerySingle("SELECT Email FROM UserProfile WHERE LOWER(Email) = LOWER(@0)", email);
+            if (user == null) {
+                // 将电子邮件插入到配置文件表
+                db.Execute("INSERT INTO UserProfile (Email) VALUES (@0)", email);
+
+// 在成员资格数据库中创建并关联新项。
+// 如果成功，则继续处理请求
+                try {
+                    bool requireEmailConfirmation = !WebMail.SmtpServer.IsEmpty();
+                    var token = WebSecurity.CreateAccount(email, password, requireEmailConfirmation);
+                    if (requireEmailConfirmation) {
+                        var hostUrl = Request.Url.GetComponents(UriComponents.SchemeAndServer, UriFormat.Unescaped);
+                        var confirmationUrl = hostUrl + VirtualPathUtility.ToAbsolute("~/Account/Confirm?confirmationCode=" + HttpUtility.UrlEncode(token));
+
+                        WebMail.Send(
+                            to: email,
+subject: "请确认你的帐户",
+                            body: "你的确认代码是: " + token + ". Visit <a href=\"" + confirmationUrl + "\">" + confirmationUrl + "</a> 以激活你的帐户."
+                        );
+                    }
+
+                    if (requireEmailConfirmation) {
+                        // 感谢用户注册，并让用户知道正在向他们发送一封电子邮件
+                        Response.Redirect("~/Account/Thanks");
+                    } else {
+                        // 导航回主页并退出
+                        WebSecurity.Login(email, password);
+
+                        Response.Redirect("~/");
+                    }
+                } catch (System.Web.Security.MembershipCreateUserException e) {
+                    ModelState.AddFormError(e.Message);
+                }
+            } else {
+// 用户已存在
+                ModelState.AddFormError("Email address is already in use.");
+            }
+        }
+    }
+}
+
+<hgroup class="title">
+    <h1>@Page.Title.</h1>
+<h2>新建帐户.</h2>
+</hgroup>
+
+<form method="post">
+    @AntiForgery.GetHtml()
+@* 如果至少存在一个验证错误，则通知用户*@
+@Html.ValidationSummary("帐户创建失败。请更正错误，然后重试.", excludeFieldErrors: true, htmlAttributes: null)
+
+    <fieldset>
+<legend>注册表单</legend>
+        <ol>
+            <li class="email">
+<label for="email" @if(!ModelState.IsValidField("email")){<text>class="error-label"</text>}>电子邮件地址</label>
+                <input type="text" id="email" name="email" value="@email" @Validation.For("email") />
+@* 将任何电子邮件验证错误写入此页*@
+                @Html.ValidationMessage("email")
+            </li>
+            <li class="password">
+<label for="password" @if(!ModelState.IsValidField("password")) {<text>class="error-label"</text>}>密码</label>
+                <input type="password" id="password" name="password" @Validation.For("password") />
+                @* 将任何密码验证错误写入此页*@
+                @Html.ValidationMessage("password")
+            </li>
+            <li class="confirm-password">
+<label for="confirmPassword" @if(!ModelState.IsValidField("confirmPassword")) {<text>class="error-label"</text>}>确认密码</label>
+                <input type="password" id="confirmPassword" name="confirmPassword" @Validation.For("confirmPassword") />
+                @* 将任何密码验证错误写入此页*@
+                @Html.ValidationMessage("confirmPassword")
+            </li>
+            <li class="recaptcha">
+                <div class="message-info">
+                    <p>
+若要启用 CAPTCHA 验证, <a href="http://go.microsoft.com/fwlink/?LinkId=204140">请安装 
+ASP.NET Web Helpers Library</a> ，取消注释 ReCaptcha.GetHtml 并将 'PUBLIC_KEY'
+替换为你的公钥。在此页顶端，取消注释 ReCaptcha. Validate 并
+将 'PRIVATE_KEY' 替换为你的私钥。
+注册 reCAPTCHA 密钥(在 <a href="http://recaptcha.net">reCAPTCHA.net</a> 上）.
+                    </p>
+                </div>
+                @*
+                @ReCaptcha.GetHtml("PUBLIC_KEY", theme: "white")
+                @Html.ValidationMessage("recaptcha")
+                *@
+            </li>
+        </ol>
+        <input type="submit" value="注册" />
+    </fieldset>
+</form>

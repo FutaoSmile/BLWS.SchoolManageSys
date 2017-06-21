@@ -1,0 +1,104 @@
+﻿@* 如果你要使用绑定，请删除本部分 *@
+@section Scripts {
+    <script src="~/Scripts/jquery.validate.min.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+}
+
+@{
+    Layout = "~/_SiteLayout.cshtml";
+    Page.Title = "登录";
+
+    // 初始化常规页变量
+    var email = "";
+    var password = "";
+    var rememberMe = false;
+
+    var returnUrl = Request.QueryString["ReturnUrl"];
+    if (returnUrl.IsEmpty()) {
+        // 有些外部登录提供程序始终需要一个返回 URL 值
+        returnUrl = Href("~/");
+    }
+
+    // Setup validation
+    Validation.RequireField("email", "必须指定电子邮件地址。");
+    Validation.RequireField("password", "必须指定密码。");
+    Validation.Add("password",
+        Validator.StringLength(
+            maxLength: Int32.MaxValue,
+            minLength: 6,
+            errorMessage: "密码必须至少包含 6 个字符"));
+
+    // 如果这是 POST 请求，则验证并处理数据
+    if (IsPost) {
+        AntiForgery.Validate();
+        // 这是否是外部登录请求?
+        string provider = Request.Form["provider"];
+        if (!provider.IsEmpty()) {
+            OAuthWebSecurity.RequestAuthentication(provider, Href("~/Account/RegisterService", new { returnUrl }));
+            return;
+        } else if (Validation.IsValid()) {
+            email = Request.Form["email"];
+            password = Request.Form["password"];
+            rememberMe = Request.Form["rememberMe"].AsBool();
+
+            if (WebSecurity.UserExists(email) && WebSecurity.GetPasswordFailuresSinceLastSuccess(email) > 4 && WebSecurity.GetLastPasswordFailureDate(email).AddSeconds(60) > DateTime.UtcNow) {
+                Response.Redirect("~/Account/AccountLockedOut");
+                return;
+            }
+
+            // 尝试使用提供的凭据登录
+            if (WebSecurity.Login(email, password, rememberMe)) {
+                Context.RedirectLocal(returnUrl);
+                return;
+            } else {
+                ModelState.AddFormError("提供的用户名或密码不正确。");
+            }
+        }
+    }
+}
+
+<hgroup class="title">
+    <h1>@Page.Title.</h1>
+</hgroup>
+
+<section id="loginForm">
+    <h2>使用本地帐户登录。</h2>
+    <form method="post">
+        @AntiForgery.GetHtml()
+        @* 如果存在一个或多个验证错误，则显示以下错误 *@
+        @Html.ValidationSummary("登录失败。请更正错误并重试.", excludeFieldErrors: true, htmlAttributes: null)
+
+        <fieldset>
+            <legend>登录你的帐户</legend>
+            <ol>
+                <li class="email">
+                    <label for="email" @if (!ModelState.IsValidField("email"))
+                                       {<text>class="error-label"</text>}>电子邮件地址</label>
+                    <input type="text" id="email" name="email" value="@email" @Validation.For("email")/>
+                    @* 将任何用户名验证错误写入此页 *@
+                    @Html.ValidationMessage("email")
+                </li>
+                <li class="password">
+                    <label for="password" @if (!ModelState.IsValidField("password")) {<text>class="error-label"</text>}>密码</label>
+                    <input type="password" id="password" name="password" @Validation.For("password")/>
+                    @* 将任何密码验证错误写入此页 *@
+                    @Html.ValidationMessage("password")
+                </li>
+                <li class="remember-me">
+                    <input type="checkbox" id="rememberMe" name="rememberMe" value="true" checked="@rememberMe" />
+                    <label class="checkbox" for="rememberMe">记住我?</label>
+                </li>
+            </ol>
+            <input type="submit" value="登录" />
+        </fieldset>
+    </form>
+    <p>
+        <a href="~/Account/Register">没有帐户?</a>
+        <a href="~/Account/ForgotPassword">忘记了密码?</a>
+    </p>
+</section>
+
+<section class="social" id="socialLoginForm">
+    <h2>使用其他服务登录.</h2>
+    @RenderPage("~/Account/_ExternalLoginsList.cshtml")
+</section>

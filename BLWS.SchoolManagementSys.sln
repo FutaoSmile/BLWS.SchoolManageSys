@@ -1,0 +1,60 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BLWS.SchoolManagementSys.EF", "BLWS.SchoolManagementSys.EF\BLWS.SchoolManagementSys.EF.csproj", "{637F14B3-7118-4C2B-8563-CC1B9D66CD58}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BLWS.SchoolManagementSys.WebApi", "BLWS.SchoolManagementSys.WebApi\BLWS.SchoolManagementSys.WebApi.csproj", "{9425C3FB-52BA-4F5C-946E-18885148585D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BLWS.SchoolManagementSys.WebApi.Tests", "BLWS.SchoolManagementSys.WebApi.Tests\BLWS.SchoolManagementSys.WebApi.Tests.csproj", "{4A29E771-4ED7-47F8-8F6E-74279DAACCC5}"
+EndProject
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "BLWS.SchoolManagementSys.App(1)", "BLWS.SchoolManagementSys.App\", "{C0AAD516-D992-44CA-AC43-0F90420604C4}"
+	ProjectSection(WebsiteProperties) = preProject
+		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.5.2"
+		Debug.AspNetCompiler.VirtualPath = "/localhost_59192"
+		Debug.AspNetCompiler.PhysicalPath = "BLWS.SchoolManagementSys.App\"
+		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_59192\"
+		Debug.AspNetCompiler.Updateable = "true"
+		Debug.AspNetCompiler.ForceOverwrite = "true"
+		Debug.AspNetCompiler.FixedNames = "false"
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.VirtualPath = "/localhost_59192"
+		Release.AspNetCompiler.PhysicalPath = "BLWS.SchoolManagementSys.App\"
+		Release.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_59192\"
+		Release.AspNetCompiler.Updateable = "true"
+		Release.AspNetCompiler.ForceOverwrite = "true"
+		Release.AspNetCompiler.FixedNames = "false"
+		Release.AspNetCompiler.Debug = "False"
+		VWDPort = "59192"
+		SlnRelativePath = "BLWS.SchoolManagementSys.App\"
+		DefaultWebSiteLanguage = "Visual C#"
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{637F14B3-7118-4C2B-8563-CC1B9D66CD58}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{637F14B3-7118-4C2B-8563-CC1B9D66CD58}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{637F14B3-7118-4C2B-8563-CC1B9D66CD58}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{637F14B3-7118-4C2B-8563-CC1B9D66CD58}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9425C3FB-52BA-4F5C-946E-18885148585D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9425C3FB-52BA-4F5C-946E-18885148585D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9425C3FB-52BA-4F5C-946E-18885148585D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9425C3FB-52BA-4F5C-946E-18885148585D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4A29E771-4ED7-47F8-8F6E-74279DAACCC5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4A29E771-4ED7-47F8-8F6E-74279DAACCC5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4A29E771-4ED7-47F8-8F6E-74279DAACCC5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4A29E771-4ED7-47F8-8F6E-74279DAACCC5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C0AAD516-D992-44CA-AC43-0F90420604C4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C0AAD516-D992-44CA-AC43-0F90420604C4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C0AAD516-D992-44CA-AC43-0F90420604C4}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{C0AAD516-D992-44CA-AC43-0F90420604C4}.Release|Any CPU.Build.0 = Debug|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

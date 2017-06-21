@@ -1,0 +1,134 @@
+﻿@{
+    Page.Title = "选课系统";
+    Layout = "~/Views/_Layout.cshtml";
+}
+
+<div>
+    <div data-ng-app="Score" id="app">
+        <div ng-controller="ScoreController">
+            <span  id="id" style="display:none"></span>
+            <!-- 添加Modal -->
+            <div class="modal fade" id="create" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title text-success" id="myModalLabel">新增</h4>
+                        </div>
+                       
+                        <div class="form-group">
+                            <label for="EditDepName" class="col-sm-2 control-label">课程名</label>
+                            <div class="col-sm-10">
+                                <input name="Edit_DepName"
+                                       id="EditDepName"
+                                       ng-model="Choose.CourseName"
+                                       required
+                                       ng-maxlength="12"
+                                       class="form-control"
+                                       disabled
+                                       placeholder="CourseName"/>                                
+                            </div>
+                        </div> 
+                        <div class="form-group">
+                            <label for="EditCourseID" class="col-sm-2 control-label">课程ID</label>
+                            <div class="col-sm-10">
+                                <input name="Edit_CourseID"
+                                       id="EditCourseID"
+                                       ng-model="Choose.CourseID"
+                                       required
+                                       
+                                       class="form-control"
+                                       disabled
+                                       placeholder="CourseID" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="EditTeacherName" class="col-sm-2 control-label">教师名</label>
+                            <div class="col-sm-10">
+                                <input name="Edit_TeacherName"
+                                       id="EditDepName"
+                                       ng-model="Choose.TeacherName"
+                                       required
+                                       ng-maxlength="12"
+                                       class="form-control"
+                                       disabled
+                                       placeholder="TeacherName" />
+                            </div>
+                        </div>  
+                        <div class="form-group">
+                            <label for="EditTeacherID" class="col-sm-2 control-label">教师ID</label>
+                            <div class="col-sm-10">
+                                <input name="Edit_TeacherID"
+                                       id="EditDepName"
+                                       ng-model="Choose.TeacherID"
+                                       required
+                                       
+                                       class="form-control"
+                                       disabled
+                                       placeholder="TeacherID" />
+                            </div>
+                        </div>                                            
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-success" data-dismiss="modal"  ng-click="save()">保存</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+          
+           
+
+            @*显示当前位置导航*@
+            <div class="top_nav_f">
+                <ol class="breadcrumb" style="margin-bottom:0;">
+                    <li><span class="fa fa-home"></span> <a href="javascript:;">首页</a></li>
+                    <li><a href="javascript:;">系统管理</a></li>
+                    <li class="active">选课系统</li>
+                </ol>
+            </div>
+            <div class="media" ng-repeat="course in CourseList" style="margin-top:20px; padding:5px; border:1px solid #ccc">
+                <div class="media-left">
+                    <!--<span class="text-success"> {{course.Property}}</span>-->
+                </div>
+                <div class="media-body">
+                    <h4 class="media-heading text-info" style="margin-top:10px;font-weight:bold">{{course.CourseName}}<small class="text-right">&nbsp;&nbsp; 学分：{{course.Credit}}</small></h4>
+                    <h4>任课老师:{{course.TeacherName}}</h4>
+                    <span>课程介绍：</span>{{course.Description}}
+                </div>
+                <div class="text-right">
+                    <div class="btn-group btn-group-sm" role="group">
+                        <button type="button" class="btn btn-success" ng-click="create(course.CourseID)">选课</button>
+                        
+                    </div>
+                </div>
+            </div>
+           
+        </div>
+    </div>
+    @section Script{
+
+        <link href="~/Scripts/dataTable/css/dataTables.bootstrap.css" rel="stylesheet" />
+        <script src="~/Scripts/dataTable/js/jquery.dataTables.js"></script>
+        <script src="~/Scripts/dataTable/js/dataTables.bootstrap.js"></script>
+
+        <script src="~/Scripts/dataTable/Buttons-1.3.1/js/dataTables.buttons.js"></script>
+        <script src="~/Scripts/dataTable/Buttons-1.3.1/js/buttons.bootstrap.js"></script>
+        <script src="~/Scripts/dataTable/Buttons-1.3.1/js/buttons.flash.js"></script>
+        <script src="~/Scripts/dataTable/Buttons-1.3.1/js/buttons.html5.js"></script>
+        <script src="~/Scripts/dataTable/Buttons-1.3.1/js/buttons.print.js"></script>
+        <script src="~/Scripts/dataTable/Buttons-1.3.1/js/buttons.colVis.js"></script>
+       
+        <script type="text/javascript">
+            $("#id").text($.cookie('userID'));
+           
+        </script>
+     
+
+        <script src="~/Scripts/angular.js"></script>
+        <script src="~/Scripts/angular-route.js"></script>
+        <script src="~/ng-js/Score/Score.js"></script>
+        <script src="~/ng-js/Score/ScoreController.js"></script>
+        <script src="~/ng-js/Score/ScoreService.js"></script>
+
+    }
+</div>

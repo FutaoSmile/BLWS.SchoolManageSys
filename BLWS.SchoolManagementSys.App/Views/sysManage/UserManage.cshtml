@@ -1,0 +1,724 @@
+﻿@{
+    Page.Title = "用户管理";
+    Layout = "~/Views/_Layout.cshtml";
+}
+<div data-ng-app="User" id="app">
+    <div ng-controller="UserController">
+        @*显示当前位置导航*@
+        <div class="top_nav_f">
+            <ol class="breadcrumb" style="margin-bottom:0;">
+                <li><span class="fa fa-home"></span> <a href="javascript:;">首页</a></li>
+                <li><a href="javascript:;">系统管理</a></li>
+                <li class="active">用户管理</li>
+            </ol>
+        </div>@*Table*@
+
+        <div class="x_panel">
+            <div class="x_title">
+                <a class="text-success" style="margin-left:92%; font-size:16px" ng-click="create()" href="javascript:;">新增</a>
+            </div>
+            <div class="x_content">
+                <div class="table-responsive">
+                    <table class="table table-striped table-bordered table-hover" id="User_table">
+                        <thead>
+                            <tr>
+                                <th style="width:5px"></th>
+                                <th>用户名</th>
+                                <th>密码</th>
+                                <th>姓名拼音</th>
+                                <th>性别</th>
+                                <th>电话</th>
+                                <th>邮箱</th>
+                                <th>生日</th>
+                                <th>角色</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- 详情Modal -->
+        <div class="modal fade" id="details" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title text-primary" id="myModalLabel">详情</h4>
+                    </div>
+                    <div class="modal-body">
+
+                        <div class="table-responsive">
+                            <table class="table table-hover table-striped table-bordered">
+                                <tr>
+                                    <td style="font-weight:bold">用户编号</td>
+                                    <td id="1">{{ResultDetails.UserID}}</td>
+                                </tr>
+                                <tr>
+                                    <td style="font-weight:bold">用户名</td>
+                                    <td id="2">{{ResultDetails.UserName}}</td>
+                                </tr>
+                                <tr>
+                                    <td style="font-weight:bold">密码</td>
+                                    <td id="3">{{ResultDetails.Password}}</td>
+                                </tr>
+                                <tr>
+                                    <td style="font-weight:bold">名字拼音</td>
+                                    <td id="4">{{ResultDetails.NamePinYin}}</td>
+                                </tr>
+                                <tr>
+                                    <td style="font-weight:bold">电话</td>
+                                    <td id="5">{{ResultDetails.Tel}}</td>
+                                </tr>
+                                <tr>
+                                    <td style="font-weight:bold">邮箱</td>
+                                    <td id="6">{{ResultDetails.Email}}</td>
+                                </tr>
+                                <tr>
+                                    <td style="font-weight:bold">生日</td>
+                                    <td id="7">{{ResultDetails.Birthday}}</td>
+                                </tr>
+                                <tr>
+                                    <td style="font-weight:bold">性别</td>
+                                    <td id="8">{{ResultDetails.Sex}}</td>
+                                </tr>
+                                <tr>
+                                    <td style="font-weight:bold">创建时间</td>
+                                    <td id="9">{{ResultDetails.CreateTime}}</td>
+                                </tr>
+                                <tr>
+                                    <td style="font-weight:bold">更新时间</td>
+                                    <td id="10">{{ResultDetails.UpdateTime}}</td>
+                                </tr>
+                            </table>
+                        </div>
+
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 添加Modal -->
+        <div class="modal fade" id="create" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title text-success" id="myModalLabel">新增</h4>
+                    </div>
+                    <div class="modal-body">
+
+                        <form class="form-horizontal" name="Create_form">
+                            <div class="form-group">
+                                <label for="CreateUserName" class="col-sm-2 control-label">用户名</label>
+                                <div class="col-sm-10">
+                                    <input name="Create_UserName"
+                                           id="CreateUserName"
+                                           ng-model="createUser.User.UserName"
+                                           required
+                                           ng-maxlength="12"
+                                           class="form-control"
+                                           placeholder="UserName"
+                                           ng-class="{'error':Create_form.Create_UserName.$invalid&&Create_form.Create_UserName.$touched}" />
+                                    <div ng-if="Create_form.Create_UserName.$invalid&&Create_form.Create_UserName.$touched" class="text-danger">[必填项]请将用户名控制在12个字以内</div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="CreatePassword" class="col-sm-2 control-label">密码</label>
+                                <div class="col-sm-10">
+                                    <input id="CreatePassword"
+                                           required
+                                           name="Create_Password"
+                                           ng-maxlength="16"
+                                           class="form-control"
+                                           placeholder="Password"
+                                           ng-model="createUser.User.Password"
+                                           ng-class="{'error':Create_form.Create_Password.$invalid&&Create_form.Create_Password.$touched}" />
+                                    <div class="text-danger" ng-if="Create_form.Create_Password.$invalid&&Create_form.Create_Password.$touched">[必填项]请将密码控制在16个字以内</div>
+                                </div>
+                            </div>
+                            <!--</form>
+
+                            <form class="form-horizontal">-->
+                            <div class="form-group">
+                                <label for="NamePinYin" class="col-sm-2 control-label">姓名拼音</label>
+                                <div class="col-sm-10">
+                                    <input id="NamePinYin"
+                                           name="Create_NamePinYin"
+                                           required
+                                           ng-maxlength="20"
+                                           class="form-control"
+                                           placeholder="NamePinYin"
+                                           ng-model="createUser.User.NamePinYin"
+                                           ng-class="{'error':Create_form.Create_NamePinYin.$invalid&&Create_form.Create_NamePinYin.$touched}" />
+                                    <div ng-if="Create_form.Create_NamePinYin.$invalid&&Create_form.Create_NamePinYin.$touched" class="text-danger">[必填项]将姓名拼音控制在30个字以内</div>
+                                </div>
+                            </div>
+                            <!--</form>
+
+                            <form class="form-horizontal">-->
+                            <div class="form-group">
+                                <label for="Createtel" class="col-sm-2 control-label">联系电话</label>
+                                <div class="col-sm-10">
+                                    <input id="Createtel"
+                                           name="Create_tel"
+                                           type="number"
+                                           class="form-control"
+                                           placeholder="Tel"
+                                           ng-model="createUser.User.Tel"
+                                           ng-pattern="/^[0-9]{11}$/"
+                                           ng-class="{'error':Create_form.Create_tel.$invalid&&Create_form.Create_tel.$touched}" />
+                                    <div ng-if="Create_form.Create_tel.$invalid&&Create_form.Create_tel.$touched" class="text-danger">请输入有效位数的号码</div>
+                                </div>
+                            </div>
+                            <!--</form>
+
+                            <form class="form-horizontal">-->
+                            <div class="form-group">
+                                <label for="Createemail" class="col-sm-2 control-label">邮箱</label>
+                                <div class="col-sm-10">
+                                    <input id="Createemail"
+                                           name="Create_email"
+                                           type="email"
+                                           class="form-control"
+                                           placeholder="Email"
+                                           ng-model="createUser.User.Email"
+                                           ng-class="{'error':Create_form.Create_email.$invalid&&Create_form.Create_email.$touched}" />
+                                    <div ng-if="Create_form.Create_email.$invalid&&Create_form.Create_email.$touched" class="text-danger">Email格式不正确</div>
+                                </div>
+                            </div>
+                            <!--</form>
+
+                            <form class="form-horizontal">-->
+                            <div class="form-group has-feedback">
+                                <label for="CreateBirthday" class="col-sm-2 control-label">生日</label>
+                                <div class="input-group date form_datetime col-md-10" data-date="1979-09-16T05:25:07Z" data-date-format="dd MM yyyy - HH:ii p" data-link-field="CreateBirthday">
+                                    @*<span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>*@
+                                    <input type='text'
+                                           id='CreateBirthday'
+                                           class="form-control"
+                                           name="Create_Birthday"
+                                           placeholder="Birthday"
+                                           readonly
+                                           ng-model="createUser.User.Birthday"
+                                           ng-class="{'error':Create_form.Create_Birthday.$invalid&&Create_form.Create_Birthday.$touched}" />
+                                    <div class="input-group-addon"><span class="glyphicon glyphicon-th"></span></div>
+
+                                    <div class="text-danger" ng-if="Create_form.Create_Birthday.$invalid&&Create_form.Create_Birthday.$touched">请选择出生日期</div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="className" class="col-sm-2 control-label">性别</label>
+                                <div class="col-sm-10">
+                                    <select style="display:block;
+                                                width:100%;
+                                                height:34px;
+                                                padding:6px 12px;
+                                                font-size:14px;
+                                                line-height:1.4;
+                                                border-radius:4px;
+                                                border:1px solid #ccc;
+                                                color:#555;
+                                                "
+                                            ng-model="createUser.User.Sex" required>
+                                        <option value="">性别</option>
+                                        <option value="男">男</option>
+                                        <option value="女">女</option>
+                                    </select>
+                                </div>
+                            </div>
+
+
+                        </form>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-success" data-dismiss="modal" ng-disabled="Create_form.$invalid" ng-click="save()">保存</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 修改Modal -->
+        <div class="modal fade" id="edit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title text-success" id="myModalLabel">修改</h4>
+                    </div>
+                    <div class="modal-body">
+
+                        <form class="form-horizontal" name="Edit_form">
+                            <div class="form-group">
+                                <label for="EditUserName" class="col-sm-2 control-label">用户名</label>
+                                <div class="col-sm-10">
+                                    <input name="Edit_UserName"
+                                           id="EditUserName"
+                                           ng-model="editUser.UserName"
+                                           required
+                                           ng-maxlength="12"
+                                           class="form-control"
+                                           placeholder="UserName"
+                                           ng-class="{'error':Edit_form.Edit_UserName.$invalid&&Edit_form.Edit_UserName.$touched}" />
+                                    <div ng-if="Edit_form.Edit_UserName.$invalid&&Edit_form.Edit_UserName.$touched" class="text-danger">[必填项]请将用户名控制在12个字以内</div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="EditPassword" class="col-sm-2 control-label">密码</label>
+                                <div class="col-sm-10">
+                                    <input id="EditPassword"
+                                           required
+                                           name="Edit_Password"
+                                           ng-maxlength="16"
+                                           class="form-control"
+                                           placeholder="Password"
+                                           ng-model="editUser.Password"
+                                           ng-class="{'error':Edit_form.Edit_Password.$invalid&&Edit_form.Edit_Password.$touched}" />
+                                    <div class="text-danger" ng-if="Edit_form.Edit_Password.$invalid&&Edit_form.Edit_Password.$touched">[必填项]请将密码控制在16个字以内</div>
+                                </div>
+                            </div>
+                            <!--</form>
+
+                            <form class="form-horizontal">-->
+                            <div class="form-group">
+                                <label for="NamePinYin" class="col-sm-2 control-label">姓名拼音</label>
+                                <div class="col-sm-10">
+                                    <input id="NamePinYin"
+                                           name="Edit_NamePinYin"
+                                           required
+                                           ng-maxlength="20"
+                                           class="form-control"
+                                           placeholder="NamePinYin"
+                                           ng-model="editUser.NamePinYin"
+                                           ng-class="{'error':Edit_form.Edit_NamePinYin.$invalid&&Edit_form.Edit_NamePinYin.$touched}" />
+                                    <div ng-if="Edit_form.Edit_NamePinYin.$invalid&&Edit_form.Edit_NamePinYin.$touched" class="text-danger">[必填项]将姓名拼音控制在30个字以内</div>
+                                </div>
+                            </div>
+                            <!--</form>
+
+                            <form class="form-horizontal">-->
+                            <div class="form-group">
+                                <label for="Edittel" class="col-sm-2 control-label">联系电话</label>
+                                <div class="col-sm-10">
+                                    <input id="Edittel"
+                                           name="Edit_tel"
+                                           class="form-control"
+                                           placeholder="Tel"
+                                           ng-model="editUser.Tel"
+                                           ng-pattern="/^[0-9]{11}$/"
+                                           ng-class="{'error':Edit_form.Edit_tel.$invalid&&Edit_form.Edit_tel.$touched}" />
+                                    <div ng-if="Edit_form.Edit_tel.$invalid&&Edit_form.Edit_tel.$touched" class="text-danger">请输入有效位数的号码</div>
+                                </div>
+                            </div>
+                            <!--</form>
+
+                            <form class="form-horizontal">-->
+                            <div class="form-group">
+                                <label for="Editemail" class="col-sm-2 control-label">邮箱</label>
+                                <div class="col-sm-10">
+                                    <input id="Editemail"
+                                           name="Edit_email"
+                                           type="email"
+                                           class="form-control"
+                                           placeholder="Email"
+                                           ng-model="editUser.Email"
+                                           ng-class="{'error':Edit_form.Edit_email.$invalid&&Edit_form.Edit_email.$touched}" />
+                                    <div ng-if="Edit_form.Edit_email.$invalid&&Edit_form.Edit_email.$touched" class="text-danger">Email格式不正确</div>
+                                </div>
+                            </div>
+                            <!--</form>
+
+                            <form class="form-horizontal">-->
+                            <div class="form-group">
+                                <label for="EditBirthday" class="col-sm-2 control-label">生日</label>
+                                <div class="input-group date form_datetime col-md-10" data-date="1979-09-16T05:25:07Z" data-date-format="dd MM yyyy - HH:ii p" data-link-field="EditBirthday">
+                                    <input class="form-control"
+                                           type="text"
+                                           name="Edit_Birthday"
+                                           required
+                                           readonly
+                                           id='EditBirthday'
+                                           placeholder="Birthday"
+                                           ng-model="editUser.Birthday"
+                                           ng-class="{'error':Edit_form.Edit_Birthday.$invalid&&Edit_form.Edit_Birthday.$touched}">
+                                    <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+                                    <span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+                                </div>
+                                <div class="text-danger" ng-if="Edit_form.Edit_Birthday.$invalid&&Edit_form.Edit_Birthday.$touched">请选择出生日期</div>
+                            </div>
+
+
+                            <div class="form-group">
+                                <label for="className" class="col-sm-2 control-label">性别</label>
+                                <div class="col-sm-10">
+                                    <select style="display:block;
+                                                width:100%;
+                                                height:34px;
+                                                padding:6px 12px;
+                                                font-size:14px;
+                                                line-height:1.4;
+                                                border-radius:4px;
+                                                border:1px solid #ccc;
+                                                color:#555;
+                                                "
+                                            ng-model="editUser.Sex" required>
+                                        <option value="">性别</option>
+                                        <option value="男">男</option>
+                                        <option value="女">女</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </form>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-success" data-dismiss="modal" ng-disabled="Edit_form.$invalid" ng-click="editsave()">保存</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!--提示：删除Modal-->
+        <div class="modal fade" id="delete" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title text-danger">提示</h4>
+                    </div>
+                    <div class="modal-body">
+                        <p style="font-weight:bold">是否确认删除</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal" ng-click="delete_btn()">删除</button>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div>
+
+        <!-- 查看角色Modal -->
+        <div class="modal fade" id="RoleInfo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content" id="UserInfo">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title text-primary" id="myModalLabel">角色信息</h4>
+                    </div>
+                    <div class="modal-body">
+
+                        <form class="form-horizontal" style="border:solid 1px #c0bcbc">
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">角色：</label>
+                                <div class="col-sm-10">
+                                    <p class="form-control-static">{{ResultRole}}</p>
+                                </div>
+                            </div>
+                        </form>
+
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" ng-click="EditRole()">修改</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 修改角色Modal -->
+        <div class="modal fade" id="EditRole" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content" id="UserInfo">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title text-primary" id="myModalLabel">修改角色信息</h4>
+                    </div>
+                    <div class="modal-body">
+
+                        <form class="form-horizontal">
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">角色：</label>
+                                <div class="col-sm-10">
+                                    <select style="display:block;
+                                                width:100%;
+                                                height:34px;
+                                                padding:6px 12px;
+                                                font-size:14px;
+                                                line-height:1.4;
+                                                border-radius:4px;
+                                                border:1px solid #ccc;
+                                                color:#555;
+                                                "
+                                            ng-model="ResultRole"
+                                            ng-options="Role.RoleName for Role in RoleList" required>
+                                        <option value="">选择角色</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </form>
+
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" ng-click="EditConfirm()">确定修改</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    @section Script{
+
+        <link href="~/Scripts/DateTime/css/bootstrap-datetimepicker.min.css" rel="stylesheet" />
+        <link href="~/Scripts/dataTable/css/dataTables.bootstrap.css" rel="stylesheet" />
+        <script src="~/Scripts/dataTable/js/jquery.dataTables.js"></script>
+        <script src="~/Scripts/dataTable/js/dataTables.bootstrap.js"></script>
+        <script src="~/Scripts/DateTime/js/bootstrap-datetimepicker.min.js"></script>
+
+
+
+        <script src="~/Scripts/dataTable/Buttons-1.3.1/js/dataTables.buttons.js"></script>
+        <script src="~/Scripts/dataTable/Buttons-1.3.1/js/buttons.bootstrap.js"></script>
+        <script src="~/Scripts/dataTable/Buttons-1.3.1/js/buttons.flash.js"></script>
+        <script src="~/Scripts/dataTable/Buttons-1.3.1/js/buttons.html5.js"></script>
+        <script src="~/Scripts/dataTable/Buttons-1.3.1/js/buttons.print.js"></script>
+        <script src="~/Scripts/dataTable/Buttons-1.3.1/js/buttons.colVis.js"></script>
+
+        <script type="text/javascript">
+
+            $(".form_datetime").datetimepicker({
+                format: "dd MM yyyy - HH:ii P",
+                showMeridian: true,
+                autoclose: true,
+                todayBtn: true
+            });
+            $.get("http://localhost:57424/api/users/getuser", function (data) {
+                var t = $('#User_table').DataTable({
+                    //关闭某一列的排序功能
+                    columnDefs: [
+                        {
+                            "orderable": false, "targets": 0
+                        },
+                        {
+                            "orderable": false, "targets": 8
+                        },
+                                                {
+                                                    "orderable": false, "targets": 9
+                                                }
+                    ],
+                    //自适应布局
+                    responsive: true,
+                    //每页大小
+                    //lengthMenu: [10, 20, 30],
+                    //配置数据源
+                    data: data,
+                    //Y轴长度
+                    scrollY: 400,
+                    //分页
+                    paging: true,
+                    //查询
+                    searching: true,
+                    //排序
+                    ordering: true,
+                    //左下角信息
+                    info: true,
+                    //提示正在加载
+                    processing: true,
+                    //页面重新加载时保存状态
+                    stateSave: true,
+                    //延迟渲染
+                    deferRender: false,
+                    //区分大小写
+                    search: {
+                        caseInsensitive: true
+                    },
+
+                    //按钮的占位符（代替了之前分页大小的位置）
+                    dom: "Bfrtip",
+                    //按钮
+                    buttons: [
+                    {
+                        extend: "copy",
+                        className: "btn-sm"
+                    },
+                    //{
+                    //    extend: "csv",
+                    //    className: "btn-sm"
+                    //},
+                    {
+                        extend: "excel",
+                        className: "btn-sm"
+                    },
+                    {
+                        extend: "pdfHtml5",
+                        className: "btn-sm"
+                    },
+                    {
+                        extend: "print",
+                        className: "btn-sm"
+                    },
+                    ],
+
+
+                    //国际化（汉化）
+                    language: {
+                        //lengthMenu: '每页显示<select class="form-control input-xsmall">' + '<option value="5">5</option>' + '<option value="10">10</option>' + '<option value="20">20</option>' + '<option value="30">30</option>' + '<option value="40">40</option>' + '<option value="50">50</option>' + '</select>条记录',//左上角的分页大小显示。
+                        search: '查询：',//右上角的搜索文本，可以写html标签
+
+                        paginate: {//分页的样式内容。
+                            previous: "上一页",
+                            next: "下一页",
+                            first: "第一页",
+                            last: "最后一页"
+                        },
+                        zeroRecords: "没有检索到数据",//table tbody内容为空时，tbody的内容。
+                        //下面三者构成了总体的左下角的内容。
+                        info: "初始_MAX_ 条，筛选之后得到 _TOTAL_ 条，当前显示第_START_ 到第 _END_ ，总共_PAGES_ 页",//左下角的信息显示，大写的词为关键字。
+                        infoEmpty: "0条记录",//筛选为空时左下角的显示。
+                        infoFiltered: ""//筛选之后的左下角筛选提示，
+                    },
+                    columns: [
+                        { data: null },
+                        //{ data: 'UserID' },
+                        { data: 'UserName' },
+                        { data: 'Password' },
+                        { data: 'NamePinYin' },
+                        { data: 'Sex' },
+                        { data: 'Tel' },
+                        { data: 'Email' },
+                        { data: 'Birthday' }, {
+                            data: 'UserID',
+                            "render": function (data, type, full, callback) {
+                                //$.ajax({
+                                //    url: "http://localhost:57424/api/Users/GetUserRole/" + data,
+                                //    method: "GET",
+                                //    success: function (result) { return ("a"); },
+                                //    error: function () { return ("b"); }
+                                //})
+                                return ('<button type="button" class="btn btn-default btn-xs" ng-click="UserRole(\'' + data + '\')">查看</button>')
+
+                            }
+                        }
+                        , {
+                            data: 'UserID',
+                            "render": function (data, type, full, callback) {
+                                return ('<div class="btn-group btn-group-xs"><button type="button" class="btn btn-success" ng-click="Details(\'' + data + '\')">详情</button><button type="button" class="btn btn-info" ng-click="Edit(\'' + data + '\')">修改</button><button type="button" class="btn btn-warning" ng-click="Delete_btn(\'' + data + '\')">删除</button></div>');
+                            }
+                        }
+
+                    ],
+                    //最后一列的按钮
+                    //"columnDefs": [{
+                    //    // 定义操作列,######以下是重点########
+                    //    "targets": 9,//操作按钮目标列
+                    //    "data": null,
+                    //    "render": function (data, type, row) {
+                    //        var id = '"' + row.UserID + '"';
+                    //        var html = ""
+                    //        html += "<a ng-click='details()'  class='up btn btn-default btn-xs'><i class='fa fa-arrow-up'></i> 编辑</a>"
+                    //        html += "<a  href=''  class='down btn btn-default btn-xs'><i class='fa fa-times'></i> 删除</a>"
+                    //        return html;
+                    //    }
+                    //}],
+                    //       columnDefs: [{
+                    //           targets: 9,
+
+                    //       },
+                    //{ "orderable": false, "targets": 9 },
+                    //       ],
+
+                });
+
+                //第一列添加序号
+                t.on('order.dt search.dt',
+                function () {
+                    t.column(0, {
+                        "search": 'applied',
+                        "order": 'applied'
+                    }).nodes().each(function (cell, i) {
+                        cell.innerHTML = i + 1;
+                    });
+                }).draw();
+
+
+                //给每一行绑定点击事件，并获取当前行的信息
+                //t.on("click", "tr", function () {
+                //    $("#1").html(t.row(this).data().UserID);
+                //    $("#2").html(t.row(this).data().UserName);
+                //    $("#3").html(t.row(this).data().Password);
+                //    $("#4").html(t.row(this).data().NamePinYin);
+                //    $("#5").html(t.row(this).data().Tel);
+                //    $("#6").html(t.row(this).data().Email);
+                //    $("#7").html(t.row(this).data().Birthday);
+                //    $("#8").html(t.row(this).data().Sex);
+                //    $("#9").html(t.row(this).data().CreateTime);
+                //    $("#10").html(t.row(this).data().UpdateTime);
+
+                //    $("#details").modal({
+                //        show: true
+                //    })
+                //    //layer.msg(t.row(this).data().UserName);
+                //});
+
+            });
+
+            //function Details(id) {
+            //    $.get("http://localhost:57424/api/users/getuser/" + id, function (data) {
+
+            //        $("#1").html(data.UserID);
+            //        $("#2").html(data.UserName);
+            //        $("#3").html(data.Password);
+            //        $("#4").html(data.NamePinYin);
+            //        $("#5").html(data.Tel);
+            //        $("#6").html(data.Email);
+            //        $("#7").html(data.Birthday);
+            //        $("#8").html(data.Sex);
+            //        $("#9").html(data.CreateTime);
+            //        $("#10").html(data.UpdateTime);
+
+            //        $("#details").modal({
+            //            show: true
+            //        });
+            //    })
+            //};
+            //function Edit() {
+            //    layer.msg("2");
+            //    alert("2");
+            //};
+            //function Delete() {
+            //    layer.msg("3");
+            //    alert("3");
+            //};
+
+
+
+
+            $("#print").click(function () {
+                $("#con").jqprint();
+            });
+
+        </script>
+        <script src="~/Scripts/angular.js"></script>
+        <script src="~/Scripts/angular-route.js"></script>
+        <script src="~/ng-js/User/User.js"></script>
+        <script src="~/ng-js/User/UserController.js"></script>
+        <script src="~/ng-js/User/UserService.js"></script>
+    }
+
+
+</div>

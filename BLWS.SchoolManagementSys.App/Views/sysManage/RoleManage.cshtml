@@ -1,0 +1,431 @@
+﻿@{
+    Page.Title = "角色管理";
+    Layout = "~/Views/_Layout.cshtml";
+}
+<div data-ng-app="Role" id="app">
+    <div ng-controller="RoleController">
+
+        <!-- 修改Modal -->
+        <div class="modal fade" id="edit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title text-info" id="myModalLabel">修改</h4>
+                    </div>
+                    <div class="modal-body">
+
+                        <form class="form-horizontal" name="editForm">
+                            <div class="form-group">
+                                <label for="RoleName" class="col-sm-2 control-label">角色名</label>
+                                <div class="col-sm-10">
+                                    <input id="RoleName"
+                                           class="form-control"
+                                           ng-maxlength="10"
+                                           required
+                                           placeholder="RoleName"
+                                           ng-model="editRole.RoleName"
+                                           name="editCourseName"
+                                           ng-class="{'error':editForm.editCourseName.$invalid&&editForm.editCourseName.$touched}" />
+                                    <div ng-if="editForm.editCourseName.$invalid&&editForm.editCourseName.$touched" class="text-danger">[必填项]请将学生名字控制在10个字以内</div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="RoleID" class="col-sm-2 control-label">角色ID</label>
+                                <div class="col-sm-10">
+                                    <input name="Edit_courseCredit"
+                                           id="RoleID"
+                                           ng-model="editRole.RoleID"
+                                           required
+                                          disabled
+                                           class="form-control"
+                                           placeholder="RoleID"
+                                            />
+                                    
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-info" data-dismiss="modal"ng-disabled="editForm.$invalid" ng-click="editSave()" >SaveChanges</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+       
+        <!-- 添加Modal -->
+        <div class="modal fade" id="create" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title text-success" id="myModalLabel">新增</h4>
+                    </div>
+                    <div class="modal-body">
+
+                        <form class="form-horizontal" name="Create_form">
+                            <div class="form-group">
+                                <label for="CreateRoleName" class="col-sm-2 control-label">角色名</label>
+                                <div class="col-sm-10">
+                                    <input name="Create_RoleName"
+                                           id="CreateRoleName"
+                                           ng-model="createRole.Role.RoleName"
+                                           required
+                                           ng-maxlength="10"
+                                           class="form-control"
+                                           placeholder="RoleName"
+                                           ng-class="{'error':Create_form.Create_RoleName.$invalid&&Create_form.Create_RoleName.$touched}" />
+                                    <div ng-if="Create_form.Create_RoleName.$invalid&&Create_form.Create_RoleName.$touched" class="text-danger">[必填项]请将角色控制在10个字以内</div>
+                                </div>
+                            </div>
+
+                            @*<div class="form-group">
+                                <label for="CreateRoleID" class="col-sm-2 control-label">角色ID</label>
+                                <div class="col-sm-10">
+                                    <input id="CreateRoleID"
+                                           required
+                                           name="Create_RoleID"
+                                           ng-maxlength="36"
+                                           class="form-control"
+                                           placeholder="RoleID"
+                                           ng-model="createRole.Role.RoleID"
+                                           ng-class="{'error':Create_form.Create_RoleID.$invalid&&Create_form.Create_RoleID.$touched}"
+                                           />
+                                    
+                                </div>
+                            </div>*@
+                      </form> 
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-success" data-dismiss="modal" ng-disabled="Create_form.$invalid" ng-click="save()">保存</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!--提示：删除确认-->
+        <div class="modal fade" id="delete" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title text-danger">提示</h4>
+                    </div>
+                    <div class="modal-body">
+                        <p style="font-weight:bold">是否确认删除</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal" ng-click="delete_btn()">删除</button>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div>
+        
+        <!-- 详情Modal -->
+        <div class="modal fade" id="details" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title text-primary" id="myModalLabel">详情</h4>
+                    </div>
+                    <div class="modal-body">
+
+                        <div class="table-responsive">
+                            <table class="table table-hover table-striped table-bordered">
+                                <tr>
+                                    <td style="font-weight:bold">角色编号</td>
+                                    <td id="1">{{ResultDetails.RoleID}}</td>
+                                </tr>
+                                <tr>
+                                    <td style="font-weight:bold">角色名</td>
+                                    <td id="2">{{ResultDetails.RoleName}}</td>
+                                </tr>
+                              
+                            </table>
+                        </div>
+
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 查看菜单Modal -->
+        <div class="modal fade" id="MenuInfo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content" id="RoleInfo">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title text-primary" id="myModalLabel">菜单信息</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover table-striped table-bordered">
+                                <tr>
+                                    <th style="font-weight:bold">菜单名称</th>
+                                    <th style="font-weight:bold">操作</th>
+                                </tr>
+                                <tr ng-repeat="menu in ResultMenu">
+                                    <td>{{menu.MenuName}}</td>
+                                    <td><button type="button" class="btn btn-danger btn-xs" ng-click="DeleteMenu(menu)">删除</button></td>
+                                   
+                                </tr>
+
+                            </table>
+                        </div>
+                        
+
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" ng-click="EditMenu()">添加</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 添加菜单Modal -->
+        <div class="modal fade" id="EditMenu" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content" id="RoleInfo">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title text-primary" id="myModalLabel">修改菜单信息</h4>
+                    </div>
+                    <div class="modal-body">
+
+                        <form class="form-horizontal">
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">菜单：</label>
+                                <div class="col-sm-10">
+                                    <select style="display:block;
+                                                width:100%;
+                                                height:34px;
+                                                padding:6px 12px;
+                                                font-size:14px;
+                                                line-height:1.4;
+                                                border-radius:4px;
+                                                border:1px solid #ccc;
+                                                color:#555;
+                                                "
+                                            ng-model="ResultMenu"
+                                            ng-options="Menu.MenuName for Menu in MenuList" required>
+                                        <option value="">选择菜单</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </form>
+
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" ng-click="EditConfirm()">确定添加</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!--提示：确认删除角色菜单-->
+        <div class="modal fade" id="DeleteMenu" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title text-danger">提示</h4>
+                    </div>
+                    <div class="modal-body">
+                        <p style="font-weight:bold">是否确认删除</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal" ng-click="delete()">删除</button>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div>
+
+        @*显示当前位置导航*@
+        <div class="top_nav_f">
+            <ol class="breadcrumb" style="margin-bottom:0;">
+                <li><span class="fa fa-home"></span> <a href="javascript:;">首页</a></li>
+                <li><a href="javascript:;">系统管理</a></li>
+                <li class="active">角色管理</li>
+            </ol>
+        </div>
+
+        @*Table*@
+        <div class="x_panel">
+            <div class="x_title">
+                <a class="text-success" style="margin-left:92%; font-size:16px" ng-click="create()" href="javascript:;">新增</a>
+            </div>
+            <div class="x_content">
+                <div class="table-responsive">
+                    <table class="table table-striped table-bordered table-hover" id="User_table">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>角色编号</th>
+                                <th>角色名称</th>
+                                <th>菜单</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+    </div> 
+
+    @section Script{
+
+        <link href="~/Scripts/dataTable/css/dataTables.bootstrap.css" rel="stylesheet" />
+        <script src="~/Scripts/dataTable/js/jquery.dataTables.js"></script>
+        <script src="~/Scripts/dataTable/js/dataTables.bootstrap.js"></script>
+
+        <script src="~/Scripts/dataTable/Buttons-1.3.1/js/dataTables.buttons.js"></script>
+        <script src="~/Scripts/dataTable/Buttons-1.3.1/js/buttons.bootstrap.js"></script>
+        <script src="~/Scripts/dataTable/Buttons-1.3.1/js/buttons.flash.js"></script>
+        <script src="~/Scripts/dataTable/Buttons-1.3.1/js/buttons.html5.js"></script>
+        <script src="~/Scripts/dataTable/Buttons-1.3.1/js/buttons.print.js"></script>
+        <script src="~/Scripts/dataTable/Buttons-1.3.1/js/buttons.colVis.js"></script>
+        <script type="text/javascript">
+
+                $.get("http://localhost:57424/api/Roles/getRole", function (data) {
+                    var t = $('#User_table').DataTable({
+                        //关闭某一列的排序功能
+                        columnDefs: [
+                            {
+                                "orderable": false, "targets": 0
+                            },
+                             {
+                                 "orderable": false, "targets": 3
+                             },
+                             {
+                                 "orderable": false, "targets": 4
+                             }
+                        ],
+                        //自适应布局
+                        responsive: true,
+                        //每页大小
+                        lengthMenu: [10, 20, 30],
+                        //配置数据源
+                        data: data,
+                        //Y轴长度
+                        scrollY: 380,
+                        //分页
+                        paging: true,
+                        //查询
+                        searching: true,
+                        //排序
+                        ordering: true,
+                        //左下角信息
+                        info: true,
+                        //提示正在加载
+                        processing: true,
+                        //页面重新加载时保存状态
+                        stateSave: true,
+                        //延迟渲染
+                        deferRender: false,
+                        //区分大小写
+                        search: {
+                            caseInsensitive: true
+                        },//按钮的占位符（代替了之前分页大小的位置）
+                        dom: "Bfrtip",
+                        //按钮
+                        buttons: [
+                        {
+                            extend: "copy",
+                            className: "btn-sm"
+                        },
+                        //{
+                        //    extend: "csv",
+                        //    className: "btn-sm"
+                        //},
+                        {
+                            extend: "excel",
+                            className: "btn-sm"
+                        },
+                        {
+                            extend: "pdfHtml5",
+                            className: "btn-sm"
+                        },
+                        {
+                            extend: "print",
+                            className: "btn-sm"
+                        },
+                        ],
+
+                        //国际化（汉化）
+                        language: {
+                            //lengthMenu: '每页显示<select class="form-control input-xsmall">' + '<option value="5">5</option>' + '<option value="10">10</option>' + '<option value="20">20</option>' + '<option value="30">30</option>' + '<option value="40">40</option>' + '<option value="50">50</option>' + '</select>条记录',//左上角的分页大小显示。
+                            search: '查询：',//右上角的搜索文本，可以写html标签
+
+                            paginate: {//分页的样式内容。
+                                previous: "上一页",
+                                next: "下一页",
+                                first: "第一页",
+                                last: "最后一页"
+                            },
+                            zeroRecords: "没有检索到数据",//table tbody内容为空时，tbody的内容。
+                            //下面三者构成了总体的左下角的内容。
+                            info: "初始_MAX_ 条，筛选之后得到 _TOTAL_ 条，当前显示第_START_ 到第 _END_ ，总共_PAGES_ 页",//左下角的信息显示，大写的词为关键字。
+                            infoEmpty: "0条记录",//筛选为空时左下角的显示。
+                            infoFiltered: ""//筛选之后的左下角筛选提示，
+                        },
+                        columns: [
+                            { data: null },
+                            { data: 'RoleID' },
+                            { data: 'RoleName' },
+                            {
+                                data: 'RoleID',
+                                "render": function (data, type, full, callback) {
+                                    return ('<button type="button" class="btn btn-success btn-xs" ng-click="RoleMenu(\'' + data + '\')">查看</button>')
+                                }
+                            },
+                            {
+                                data: 'RoleID',
+                                "render": function (data, type, full, callback) {
+                                    return ('<div class="btn-group btn-group-xs"><button type="button" class="btn btn-success" ng-click="Details(\'' + data + '\')">详情</button><button type="button" class="btn btn-info" ng-click="Edit(\'' + data + '\')" href="javascript:;">修改</button><button type="button" class="btn btn-warning" ng-click="Delete_btn(\'' + data + '\')">删除</button></div>');
+                                }
+                            }
+                        ]
+                    });
+                    //前台添加序号
+                    t.on('order.dt search.dt',
+                    function () {
+                        t.column(0, {
+                            "search": 'applied',
+                            "order": 'applied'
+                        }).nodes().each(function (cell, i) {
+                            cell.innerHTML = i + 1;
+                        });
+                    }).draw();
+                    //给每一行绑定点击事件，并获取当前行的信息
+                    //t.on("click", "tr", function () {
+                    //    layer.msg(t.row(this).data().RoleName);
+                    //})
+                });
+
+
+        </script>
+
+        <script src="~/Scripts/angular.js"></script>
+        <script src="~/Scripts/angular-route.js"></script>
+        <script src="~/ng-js/Role/Role.js"></script>
+        <script src="~/ng-js/Role/RoleController.js"></script>
+        <script src="~/ng-js/Role/RoleService.js"></script>
+
+    }
+</div>

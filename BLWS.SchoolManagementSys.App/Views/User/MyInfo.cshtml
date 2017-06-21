@@ -1,0 +1,207 @@
+﻿@{
+    Page.Title = "个人信息";
+    Layout = "~/Views/_Layout.cshtml";
+}
+
+<script src="~/Scripts/angular.js"></script>
+<script src="~/Scripts/angular-route.js"></script>
+<script src="~/ng-js/User/User.js"></script>
+<script src="~/ng-js/User/UserController.js"></script>
+<script src="~/ng-js/User/UserService.js"></script>
+
+
+<div data-ng-app="User">
+    <div ng-controller="UserController">
+        @*显示当前位置导航*@
+        <div style="background-color:#f5f5f5; border:solid #e5e5e5 1px; margin:0 -20px; font-size:15px;">
+            <ol class="breadcrumb" style="margin-bottom:0;">
+                <li><span class="fa fa-home"></span> <a href="javascript:;">首页</a></li>
+                <li class="active">个人信息</li>
+            </ol>
+
+        </div>
+
+        <style type="text/css">
+
+            #a {
+            background-color:#fff;
+            border-radius:10px;
+            box-shadow: 3px 3px 15px black;
+            padding:20px 0px 0px 20px;
+            font-size:14px;
+
+            }
+            .form-control-static {
+            padding-top:0px;
+            }
+            #showUser {
+            margin-top:30px;
+            }
+            
+           /*.form-horizontal >.control-label {
+            padding-top:0px;
+            }*/
+        </style>
+
+        <div class="row" id="showUser">
+            <div class="col-md-6 col-md-offset-3 col-sm-10 col-xs-10 col-xs-offset-1 col-sm-offset-1">
+                <form class="form-horizontal" id="a">
+                    <div class="row">
+
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">用户名</label>
+                            <div class="col-md-9">
+                                <p class="form-control-static">{{UserInfo.UserName}}</p>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">名字拼音</label>
+                            <div class="col-sm-9">
+                                <p class="form-control-static">{{UserInfo.NamePinYin}}</p>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">性别</label>
+                            <div class="col-sm-9">
+                                <p class="form-control-static">{{UserInfo.Sex}}</p>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">联系方式</label>
+                            <div class="col-sm-9">
+                                <p class="form-control-static">{{UserInfo.Tel}}</p>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">邮箱</label>
+                            <div class="col-sm-9">
+                                <p class="form-control-static">{{UserInfo.Email}}</p>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">生日</label>
+                            <div class="col-sm-9">
+                                <p class="form-control-static">{{UserInfo.Birthday}}</p>
+                            </div>
+                        </div>
+
+
+                        <button class="btn btn-primary" id="edit_btn" style="margin-bottom:20px">修改</button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+
+
+
+        <div class="x-panel" id="editUser">
+            <div class="avatar-box">
+                <p class="avatar"></p>
+            </div>
+            <form class="form-horizontal">
+            
+                            <label class="col-sm-2 control-label">用户名 :</label>
+                            <div class="col-sm-10">
+                                <input class="form-control" ng-model="UserInfo.UserName" />
+                            </div>
+                   
+                            <label class="col-sm-2 control-label">姓名拼音 :</label>
+                            <div class="col-sm-10">
+                                <input class="form-control" ng-model="UserInfo.NamePinYin" />
+                            </div>
+                  
+                            <label class="col-sm-2 control-label">性别 :</label>
+                            <div class="col-sm-10">
+                                <input class="form-control" ng-model="UserInfo.Sex" />
+                            </div>
+                    
+                            <label class="col-sm-2 control-label">联系方式 :</label>
+                            <div class="col-sm-10">
+                                <input class="form-control" ng-model="UserInfo.Tel" />
+                            </div>
+                       
+                            <label class="col-sm-2 control-label">邮箱 :</label>
+                            <div class="col-sm-10">
+                                <input class="form-control" ng-model="UserInfo.Email" />
+                            </div>
+                        
+                            <label class="col-sm-2 control-label">出生日期 :</label>
+                            <div class="col-sm-10">
+                                <input class="form-control" ng-model="UserInfo.Birthday" />
+                            </div>
+                      
+                    <button class="btn btn-primary" style="margin-bottom:20px" id="save" ng-click="SaveUserInfo()">保存</button>
+                    <button class="btn btn-default" style="margin-bottom:20px" id="back">取消</button>
+            
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Script{
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $.get("http://localhost:57424/api/Users/GetUser?id=" + $.cookie('userID'), function (data) {
+                $("#inputUserName").val(data.UserName);
+                $("#inputPassword").val(data.Password);
+                $("#inputPasswordConfirm").val(data.Password);
+                $("#Tel").val(data.Tel);
+                $("#inputEmail").val(data.Email);
+                $("#inputBirth").val(data.Birthday);
+                $("#id").html(data.UserID).hide();
+            });
+
+            $("#inputPasswordConfirm").on("keyup", function () {
+                if ($("#inputPasswordConfirm").val() != $("#inputPassword").val()) {
+                    $("#error").show();
+                }
+                else {
+                    $("#error").hide();
+                }
+            })
+            $("#inputPassword").on("keyup", function () {
+                if ($("#inputPasswordConfirm").val() != $("#inputPassword").val()) {
+                    $("#error").show();
+                }
+                else {
+                    $("#error").hide();
+                }
+            })
+
+
+            $("#changeInfo").click(function () {
+                if ($("#inputPassword").val() == $("#inputPasswordConfirm").val()) {
+
+                    var user = {
+                        UserID: $("#id").html(),
+                        UserName: $("#inputUserName").val(),
+                        Password: $("#inputPassword").val(),
+                        Tel: $("#Tel").val(),
+                        Email: $("#inputEmail").val(),
+                        Birthday: $("#inputBirth").val(),
+                        //UpdateTime: new Date().getDate,
+                        //CreateTime: Date.now,
+                        Sex: "男",
+                        NamePinYin: "futao"
+                    }
+                    $.post("http://localhost:57424/api/Users/PutUser/" + $("#id").html(), user, function () {
+                        $("#success").html("修改成功");
+                    })
+                }
+
+            })
+            $("#editUser").hide();
+            $("#edit_btn").click(function () {
+                $("#showUser").hide();
+                $("#editUser").show();
+            });
+            $("#back").click(function () {
+                $("#showUser").show();
+                $("#editUser").hide();
+            })
+        })
+    </script>
+}
